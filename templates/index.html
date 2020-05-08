@@ -1,0 +1,66 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <title>Department Role Assigments Tool</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="../static/css/main.css">
+
+  <meta name="theme-color" content="#fafafa">
+</head>
+
+<body>
+  <!--[if IE]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please upgrade your browser to improve your experience and security.</p>
+  <![endif]-->
+
+
+
+  <p>Upload an existing role assignment file here</p>
+  <input type="file" id="file" style="display:none;"/>
+  <button id="button" name="button" value="Upload" onclick="thisFileUpload();">Upload</button>
+  <p id="fileContents">File Contents here</p>
+  <script>
+    function thisFileUpload() {
+      document.getElementById("file").click();
+    };
+    const inputElement = document.getElementById("file");
+    inputElement.addEventListener("change", handleFile, false);
+    function handleFile() {
+      const file = this.files[0];
+      if (file) {
+        var reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+        var data = "";
+        reader.onload = function (evt) {
+          data = evt.target.result;
+          document.getElementById("fileContents").innerHTML = readCsvIntoTable(data);
+        }
+        reader.onerror = function (evt) {
+          document.getElementById("fileContents").innerHTML = "error reading file";
+        }
+
+      }
+    }
+
+    function readCsvIntoTable(data) {
+      var lines = data.split("\n"),
+        output = [],
+        i;
+      for (i = 0; i < lines.length; i++)
+        output.push("<tr><td contenteditable='true'>"
+          + lines[i].slice(0,-1).split(",").join("</td><td contenteditable='true'>")
+          + "</td></tr>");
+      output = "<table id=\"tableData\">" + output.join("") + "</table>";
+      return output;
+    }
+  </script>
+
+</body>
+
+</html>
